@@ -1,0 +1,849 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Generated server url
+paths:
+  /health:
+    get:
+      tags:
+        - health-controller
+      summary: Health check da aplicação
+      description: Verifica se a aplicação está rodando corretamente.
+      operationId: healthCheck
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Application is running"
+  /products/{id}:
+    get:
+      tags:
+        - product-controller
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDTO"
+    put:
+      tags:
+        - product-controller
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDTO"
+    delete:
+      tags:
+        - product-controller
+      operationId: deleteById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+  /orders/startPreparation:
+    put:
+      tags:
+        - orders-controller
+      operationId: startPreparation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDTO"
+  /orders/informReady:
+    put:
+      tags:
+        - orders-controller
+      operationId: informReady
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDTO"
+  /orders/informDone:
+    put:
+      tags:
+        - orders-controller
+      operationId: informDone
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDTO"
+  /products:
+    get:
+      tags:
+        - product-controller
+      operationId: findAll
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseProductDTO"
+    post:
+      tags:
+        - product-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDTO"
+  /customers:
+    get:
+      tags:
+        - customer-controller
+      operationId: findAll_1
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseCustomerDTO"
+    post:
+      tags:
+        - customer-controller
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+  /checkout:
+    post:
+      tags:
+        - checkout-controller
+      operationId: doCheckout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DoCheckoutRequestDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentDataResponseDTO"
+  /checkout/confirmMercadoPagoQRCodePayment:
+    post:
+      tags:
+        - checkout-controller
+      operationId: confirmPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MercadoPagoQRCodePaymentCallbackDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MercadoPagoQrCodePaymentCallbackResponseDTO"
+  /carts:
+    post:
+      tags:
+        - carts-controller
+      operationId: createCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCartRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+  /carts/{cartId}/items:
+    post:
+      tags:
+        - carts-controller
+      operationId: addItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateItemRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+  /carts/{cartId}/identify:
+    post:
+      tags:
+        - carts-controller
+      operationId: associateCustomer
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartAssociateCustomerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+  /carts/{cartId}/items/{itemId}:
+    delete:
+      tags:
+        - carts-controller
+      operationId: removeItem
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+    patch:
+      tags:
+        - carts-controller
+      operationId: updateItemQuantity
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateItemQuantityRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+  /orders/getAll:
+    get:
+      tags:
+        - orders-controller
+      operationId: getAll
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseOrderDTO"
+  /orders/getAllToPrepare:
+    get:
+      tags:
+        - orders-controller
+      operationId: getAllToPrepare
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseOrderDTO"
+  /orders/getAllReady:
+    get:
+      tags:
+        - orders-controller
+      operationId: getAllReady
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseOrderDTO"
+  /orders/getAllInPreparation:
+    get:
+      tags:
+        - orders-controller
+      operationId: getAllInPreparation
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseOrderDTO"
+  /orders/getAllDone:
+    get:
+      tags:
+        - orders-controller
+      operationId: getAllDone
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedResponseOrderDTO"
+  /customers/{cpf}:
+    get:
+      tags:
+        - customer-controller
+      operationId: findByCPF
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDTO"
+  /carts/{cartId}:
+    get:
+      tags:
+        - carts-controller
+      operationId: findById_1
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponseDto"
+    delete:
+      tags:
+        - carts-controller
+      operationId: deleteCartById
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+  /customers/{id}:
+    delete:
+      tags:
+        - customer-controller
+      operationId: deleteById_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    ProductDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        name:
+          type: string
+          example: X-Tudo
+        price:
+          type: integer
+          format: int32
+          example: 3200
+        category:
+          type: string
+          enum:
+            - LANCHE
+            - BEBIDA
+            - ACOMPANHAMENTO
+            - SOBREMESA
+          example: LANCHE
+        description:
+          type: string
+          example: Pao de brioche, hamburguer angus 120g, maionese caseira temperada, cebola roxa, alface americana, mostarda com mel, ketchup
+        active:
+          type: boolean
+          example: true
+        image:
+          type: string
+      required:
+        - category
+        - description
+        - name
+        - price
+    UpdateOrderStatusDTO:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+      required:
+        - orderId
+    OrderDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        customerName:
+          type: string
+          example: Carlos Antonio
+        status:
+          type: string
+          example: CREATED
+        orderNumber:
+          type: integer
+          format: int32
+          example: 12784
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        cpf:
+          type: string
+          example: 12345678900
+        nome:
+          type: string
+          example: Carlos Antonio
+        email:
+          type: string
+          example: carlos_antonio@teste.com
+      required:
+        - email
+        - nome
+    DoCheckoutRequestDTO:
+      type: object
+      properties:
+        cartId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+      required:
+        - cartId
+    PaymentDataResponseDTO:
+      type: object
+      properties:
+        orderID:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        paymentStatus:
+          type: string
+          example: PAID
+        provider:
+          type: string
+          example: Mercado Pago
+        qrCode:
+          type: string
+          example: sadibnibnilsa-dsabn2ej90dj902j-ddnqwolnn1e2o
+    MercadoPagoQRCodePaymentCallbackDTO:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        paidValue:
+          type: number
+          example: 4200
+      required:
+        - orderId
+        - paidValue
+    MercadoPagoQrCodePaymentCallbackResponseDTO:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        customerName:
+          type: string
+          example: Carlos Antonio
+        orderId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        orderNumber:
+          type: integer
+          format: int32
+          example: 13572
+        status:
+          type: string
+          example: PAID
+    CreateCartRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        item:
+          $ref: "#/components/schemas/CreateItemRequest"
+    CreateItemRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 2
+      required:
+        - productId
+    CartItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        productId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        name:
+          type: string
+          example: Carlos Antonio
+        priceCents:
+          type: integer
+          format: int32
+          example: 92
+        quantity:
+          type: integer
+          format: int32
+          example: 2
+        subtotalCents:
+          type: integer
+          format: int32
+          example: 3200
+    CartResponseDto:
+      type: object
+      properties:
+        cartId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        customerId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemResponseDto"
+        totalCents:
+          type: integer
+          format: int32
+          example: 4200
+    CartAssociateCustomerRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          format: uuid
+          example: 1c8664cc-d166-44f6-a75b-0453308c9972
+      required:
+        - customerId
+    UpdateItemQuantityRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 2
+      required:
+        - quantity
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 10
+        sort:
+          type: array
+          items:
+            type: string
+            example: name,asc
+    PagedResponseProductDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDTO"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalPages:
+          type: integer
+          format: int32
+          example: 5
+        totalElements:
+          type: integer
+          format: int64
+          example: 50
+        size:
+          type: integer
+          format: int32
+          example: 10
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 10
+    PagedResponseCustomerDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomerDTO"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalPages:
+          type: integer
+          format: int32
+          example: 5
+        totalElements:
+          type: integer
+          format: int64
+          example: 50
+        size:
+          type: integer
+          format: int32
+          example: 10
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 10
+    PagedResponseOrderDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderDTO"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalPages:
+          type: integer
+          format: int32
+          example: 5
+        totalElements:
+          type: integer
+          format: int64
+          example: 50
+        size:
+          type: integer
+          format: int32
+          example: 10
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 10
